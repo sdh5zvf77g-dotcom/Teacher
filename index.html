@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Maths Teacher">
+  <meta name="description" content="A simple step-by-step maths practice teacher.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <title>Maths Teacher – Learn Step by Step</title>
+  <style>
+:root{
+  --bg:#07111f;--bg2:#0d1b2e;--card:rgba(16,31,52,.88);--card2:rgba(22,41,67,.92);
+  --text:#f8fafc;--muted:#9fb0c7;--primary:#7c6cff;--primary2:#4f8cff;
+  --success:#27d59a;--danger:#ff657a;--line:rgba(255,255,255,.10);
+  --shadow:0 18px 50px rgba(0,0,0,.28);--radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-height:100%;background:var(--bg);-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+  line-height:1.5;background:
+  radial-gradient(circle at 15% 0%,rgba(124,108,255,.28),transparent 34%),
+  radial-gradient(circle at 100% 15%,rgba(79,140,255,.20),transparent 30%),
+  linear-gradient(160deg,var(--bg),var(--bg2));
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button,input{font:inherit;-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+.container{width:min(760px,100%);margin:0 auto;padding:18px 16px 8px}
+header{padding:10px 4px 18px;text-align:left}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-icon{
+  width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:27px;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 10px 30px rgba(79,140,255,.25)
+}
+header h1{font-size:1.72rem;letter-spacing:-.5px}
+header p{color:var(--muted);font-size:.88rem;margin-top:2px}
+.level-info{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:4px 2px 8px;color:var(--muted);font-size:.82rem;font-weight:600}
+.progress-bar-container{height:9px;background:rgba(255,255,255,.09);border-radius:99px;overflow:hidden;margin:0 2px 18px}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),#62c7ff);border-radius:99px;transition:width .45s ease}
+.card{
+  background:linear-gradient(145deg,rgba(22,41,67,.94),rgba(10,24,42,.94));border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;backdrop-filter:blur(18px)
+}
+.topic-title{font-size:1.28rem;font-weight:800;letter-spacing:-.3px}
+.topic-desc{color:var(--muted);font-size:.9rem;margin:4px 0 16px}
+.streak{
+  display:inline-flex;align-items:center;gap:5px;background:rgba(124,108,255,.12);
+  border:1px solid rgba(124,108,255,.20);color:#cbd4ff;border-radius:999px;padding:7px 11px;font-size:.78rem;margin-bottom:14px
+}
+.streak strong{color:#fff}
+.question-box{
+  min-height:150px;display:grid;place-items:center;text-align:center;border-radius:18px;margin-bottom:14px;
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line)
+}
+.question-text{font-size:clamp(2rem,9vw,3.25rem);font-weight:800;letter-spacing:.5px;padding:18px;word-break:break-word}
+.input-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px}
+input[type="number"],input[type="text"]{
+  width:100%;min-width:0;padding:15px 16px;font-size:1.15rem;color:#fff;background:rgba(0,0,0,.20);
+  border:1.5px solid var(--line);border-radius:14px;outline:none;appearance:none;-webkit-appearance:none
+}
+input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,108,255,.13)}
+button{
+  border:0;border-radius:14px;font-weight:750;font-size:.96rem;padding:14px 18px;cursor:pointer;
+  transition:transform .15s ease,filter .15s ease,background .15s ease;min-height:50px
+}
+button:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 9px 22px rgba(79,140,255,.20)}
+.btn-secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);color:#e7edf7}
+.btn-success{background:var(--success);color:#06251a}
+.feedback{margin-top:10px;padding:13px 14px;border-radius:14px;font-weight:700;display:none}
+.feedback.correct{background:rgba(39,213,154,.12);border:1px solid rgba(39,213,154,.28);color:#78f2c5;display:block}
+.feedback.wrong{background:rgba(255,101,122,.12);border:1px solid rgba(255,101,122,.28);color:#ff9aaa;display:block}
+.explanation{
+  margin-top:12px;padding:16px;background:rgba(79,140,255,.08);border:1px solid rgba(79,140,255,.17);
+  border-radius:15px;display:none;color:#dce7f6
+}
+.explanation h3{font-size:.96rem;color:#9fc4ff;margin-bottom:8px}
+.explanation ol{padding-left:20px}.explanation li{margin-bottom:6px}.explanation p{margin-top:9px;color:var(--muted)}
+.nav-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-top:16px;padding-top:15px;
+  border-top:1px solid var(--line);font-size:.75rem;color:var(--muted)
+}
+.stats strong{display:block;font-size:1.25rem;color:#fff;margin-bottom:1px}
+.level-select{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.level-btn{
+  padding:14px 10px;background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:14px;
+  text-align:center;font-weight:700;color:#e9eef7;min-height:64px
+}
+.level-btn:hover:not(.locked){border-color:rgba(124,108,255,.7)}
+.level-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-color:transparent}
+.level-btn.locked{opacity:.42;cursor:not-allowed}
+.level-btn .lock{font-size:.72rem;display:block;margin-top:2px;color:var(--muted)}
+footer{text-align:center;padding:12px 18px 26px;color:var(--muted);font-size:.76rem}
+@media(max-width:520px){
+  .container{padding:12px 12px 4px}
+  .card{padding:17px;border-radius:20px}
+  header{padding:7px 3px 15px}
+  header h1{font-size:1.52rem}.brand-icon{width:46px;height:46px;border-radius:14px}
+  .input-row{grid-template-columns:1fr}
+  .input-row button{width:100%}
+  .nav-buttons{grid-template-columns:1fr 1fr}
+  .question-box{min-height:135px}
+}
+@media(max-width:370px){
+  .level-select{grid-template-columns:1fr}
+  .nav-buttons{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">∑</div>
+        <div>
+          <h1>Maths Teacher</h1>
+          <p>Learn step by step • Practise • Improve</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="level-info">
+      <span id="current-level-label">Level 1: Simple Addition</span>
+      <span id="progress-text">0% complete</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <!-- Main practice card -->
+    <div class="card" id="practice-card">
+      <div class="topic-title" id="topic-title">Simple Addition</div>
+      <div class="topic-desc" id="topic-desc">Add two small numbers. The easiest way is to count on from the bigger number.</div>
+
+      <div class="streak">
+        Correct in a row: <strong id="streak-count">0</strong> / 5 needed to unlock next
+      </div>
+
+      <div class="question-box">
+        <div class="question-text" id="question-text">3 + 5 = ?</div>
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="answer-input" placeholder="Your answer" aria-label="Your answer" autocomplete="off" inputmode="decimal" enterkeyhint="done">
+        <button class="btn-primary" id="check-btn" onclick="checkAnswer()">Check</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="explanation" id="explanation">
+        <h3>💡 Easiest way to work it out</h3>
+        <div id="explanation-content"></div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn-secondary" onclick="nextQuestion()">Next Question</button>
+        <button class="btn-secondary" onclick="showLevelSelect()">Choose Level</button>
+      </div>
+
+      <div class="stats">
+        <div><strong id="stat-correct">0</strong> Correct</div>
+        <div><strong id="stat-attempted">0</strong> Attempted</div>
+        <div><strong id="stat-accuracy">–</strong> Accuracy</div>
+      </div>
+    </div>
+
+    <!-- Level select card (hidden by default) -->
+    <div class="card" id="level-select-card" style="display: none;">
+      <div class="topic-title">Choose a Level</div>
+      <p class="topic-desc">You can only unlock harder levels by getting 5 correct in a row on the current one.</p>
+      <div class="level-select" id="level-buttons"></div>
+      <div class="nav-buttons" style="margin-top: 20px;">
+        <button class="btn-primary" onclick="hideLevelSelect()">Back to Practice</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Keep practising – the more you do, the easier the hard stuff becomes!
+  </footer>
+
+  <script>
+    // ========== LEVEL DEFINITIONS ==========
+    const levels = [
+      {
+        id: 0,
+        name: "Simple Addition",
+        desc: "Add two small numbers. The easiest way is to count on from the bigger number.",
+        generate: () => {
+          const a = rand(1, 12);
+          const b = rand(1, 12);
+          return {
+            question: `${a} + ${b} = ?`,
+            answer: a + b,
+            explanation: `
+              <ol>
+                <li>Look at the two numbers: <strong>${a}</strong> and <strong>${b}</strong>.</li>
+                <li>Start with the bigger number (or either if they are close).</li>
+                <li>Count on by the smaller number: ${a} ... ${explainCount(a, b)}</li>
+                <li>So ${a} + ${b} = <strong>${a + b}</strong>.</li>
+              </ol>
+              <p><em>Tip:</em> You can also use your fingers or draw ${a} dots and then ${b} more dots and count them all.</p>
+            `
+          };
+        }
+      },
+      {
+        id: 1,
+        name: "Simple Subtraction",
+        desc: "Take one number away from another. Count backwards or use a number line in your head.",
+        generate: () => {
+          const a = rand(5, 20);
+          const b = rand(1, a);
+          return {
+            question: `${a} − ${b} = ?`,
+            answer: a - b,
+            explanation: `
+              <ol>
+                <li>Start at <strong>${a}</strong>.</li>
+                <li>Count backwards ${b} steps: ${explainCountBack(a, b)}</li>
+                <li>You land on <strong>${a - b}</strong>.</li>
+              </ol>
+              <p><em>Tip:</em> Think “what do I add to ${b} to get ${a}?” That number is the answer.</p>
+            `
+          };
+        }
+      },
+      {
+        id: 2,
+        name: "Multiplication",
+        desc: "Times tables. Multiplication is just repeated addition – the easiest way to think about it.",
+        generate: () => {
+          const a = rand(2, 12);
+          const b = rand(2, 12);
+          return {
+            question: `${a} × ${b} = ?`,
+            answer: a * b,
+            explanation: `
+              <ol>
+                <li>${a} × ${b} means “${a} groups of ${b}” (or ${b} groups of ${a}).</li>
+                <li>You can add ${b} a total of ${a} times:<br>
+                    ${Array(a).fill(b).join(' + ')} = <strong>${a * b}</strong></li>
+                <li>Or use the times table you know for ${a} or ${b}.</li>
+              </ol>
+              <p><em>Tip:</em> If you know one, you can often double or half to get nearby answers.</p>
+            `
+          };
+        }
+      },
+      {
+        id: 3,
+        name: "Division",
+        desc: "Sharing equally. Division asks “how many groups?” or “how many in each group?”",
+        generate: () => {
+          const b = rand(2, 10);
+          const answer = rand(2, 12);
+          const a = b * answer;
+          return {
+            question: `${a} ÷ ${b} = ?`,
+            answer: answer,
+            explanation: `
+              <ol>
+                <li>${a} ÷ ${b} means “how many groups of ${b} fit into ${a}?”</li>
+                <li>Or “if I share ${a} things equally among ${b} people, how many does each get?”</li>
+                <li>You can count up in ${b}s until you reach ${a}:<br>
+                    ${explainMultiples(b, answer)}</li>
+                <li>You needed <strong>${answer}</strong> groups.</li>
+              </ol>
+              <p><em>Tip:</em> Division is the opposite of multiplication. What number times ${b} gives ${a}?</p>
+            `
+          };
+        }
+      },
+      {
+        id: 4,
+        name: "Basic Fractions",
+        desc: "Parts of a whole. The top number (numerator) is how many parts you have; the bottom (denominator) is how many equal parts the whole is split into.",
+        generate: () => {
+          const denoms = [2, 3, 4, 5, 6, 8, 10];
+          const d = denoms[rand(0, denoms.length - 1)];
+          const n = rand(1, d - 1);
+          // Ask for decimal or simplified? Keep simple: what is n/d of a number, or just identify value
+          // Simple: calculate the fraction of a number
+          const whole = d * rand(2, 6);
+          const answer = (n / d) * whole;
+          return {
+            question: `What is ${n}/${d} of ${whole}?`,
+            answer: answer,
+            explanation: `
+              <ol>
+                <li>The fraction ${n}/${d} means “${n} out of ${d} equal parts”.</li>
+                <li>First find one part: ${whole} ÷ ${d} = <strong>${whole / d}</strong>.</li>
+                <li>Then take ${n} of those parts: ${whole / d} × ${n} = <strong>${answer}</strong>.</li>
+              </ol>
+              <p><em>Tip:</em> Always divide by the bottom number first, then multiply by the top.</p>
+            `
+          };
+        }
+      },
+      {
+        id: 5,
+        name: "Percentages",
+        desc: "Percent means “out of 100”. Finding 10%, 25%, 50% etc. is very useful in real life.",
+        generate: () => {
+          const percents = [10, 20, 25, 50, 75];
+          const p = percents[rand(0, percents.length - 1)];
+          const whole = rand(2, 20) * 10; // nice round numbers
+          const answer = (p / 100) * whole;
+          return {
+            question: `What is ${p}% of ${whole}?`,
+            answer: answer,
+            explanation: `
+              <ol>
+                <li>${p}% means ${p} out of every 100.</li>
+                <li>Easiest method: find 10% first → ${whole} ÷ 10 = <strong>${whole / 10}</strong>.</li>
+                <li>Then scale up:
+                  ${p === 10 ? `That’s already the answer.` :
+                    p === 20 ? `20% = 2 × 10% = 2 × ${whole / 10} = <strong>${answer}</strong>` :
+                    p === 25 ? `25% = ¼ → ${whole} ÷ 4 = <strong>${answer}</strong>` :
+                    p === 50 ? `50% = half → ${whole} ÷ 2 = <strong>${answer}</strong>` :
+                    `75% = 50% + 25% = ${whole / 2} + ${whole / 4} = <strong>${answer}</strong>`}
+                </li>
+              </ol>
+              <p><em>Tip:</em> Once you can find 10% and 1%, you can build almost any percentage.</p>
+            `
+          };
+        }
+      },
+      {
+        id: 6,
+        name: "Simple Algebra",
+        desc: "Find the missing number. Think of the equation as a balanced scale – whatever you do to one side, do to the other.",
+        generate: () => {
+          const type = rand(0, 2);
+          let question, answer, explanation;
+          if (type === 0) {
+            // x + a = b
+            const a = rand(2, 15);
+            const x = rand(3, 20);
+            const b = x + a;
+            question = `x + ${a} = ${b}   →   what is x?`;
+            answer = x;
+            explanation = `
+              <ol>
+                <li>We have: x + ${a} = ${b}</li>
+                <li>To isolate x, subtract ${a} from both sides.</li>
+                <li>x = ${b} − ${a} = <strong>${x}</strong></li>
+              </ol>
+              <p><em>Tip:</em> “What do I add to ${a} to get ${b}?” That is x.</p>
+            `;
+          } else if (type === 1) {
+            // a × x = b
+            const a = rand(2, 9);
+            const x = rand(2, 12);
+            const b = a * x;
+            question = `${a}x = ${b}   →   what is x?`;
+            answer = x;
+            explanation = `
+              <ol>
+                <li>We have: ${a} × x = ${b}</li>
+                <li>To isolate x, divide both sides by ${a}.</li>
+                <li>x = ${b} ÷ ${a} = <strong>${x}</strong></li>
+              </ol>
+              <p><em>Tip:</em> “How many groups of ${a} make ${b}?”</p>
+            `;
+          } else {
+            // x − a = b
+            const a = rand(2, 12);
+            const x = rand(a + 3, 25);
+            const b = x - a;
+            question = `x − ${a} = ${b}   →   what is x?`;
+            answer = x;
+            explanation = `
+              <ol>
+                <li>We have: x − ${a} = ${b}</li>
+                <li>To isolate x, add ${a} to both sides.</li>
+                <li>x = ${b} + ${a} = <strong>${x}</strong></li>
+              </ol>
+              <p><em>Tip:</em> Start from ${b} and count up ${a} more.</p>
+            `;
+          }
+          return { question, answer, explanation };
+        }
+      }
+    ];
+
+    // ========== STATE ==========
+    let currentLevel = 0;
+    let unlockedUpTo = 0;          // highest unlocked level index
+    let streak = 0;
+    let correctTotal = 0;
+    let attemptedTotal = 0;
+    let currentProblem = null;
+
+    // ========== HELPERS ==========
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function explainCount(a, b) {
+      // simple verbal count
+      let start = Math.max(a, b);
+      let add = Math.min(a, b);
+      let parts = [];
+      for (let i = 1; i <= add; i++) {
+        parts.push(start + i);
+      }
+      return parts.join(', ');
+    }
+
+    function explainCountBack(a, b) {
+      let parts = [];
+      for (let i = 1; i <= b; i++) {
+        parts.push(a - i);
+      }
+      return parts.join(', ');
+    }
+
+    function explainMultiples(step, times) {
+      let parts = [];
+      for (let i = 1; i <= times; i++) {
+        parts.push(step * i);
+      }
+      return parts.join(', ');
+    }
+
+    // ========== CORE LOGIC ==========
+    function loadProblem() {
+      currentProblem = levels[currentLevel].generate();
+      document.getElementById('question-text').textContent = currentProblem.question;
+      document.getElementById('answer-input').value = '';
+      document.getElementById('feedback').className = 'feedback';
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('answer-input').focus();
+      updateUI();
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById('answer-input').value.trim();
+      if (input === '') return;
+
+      const userAns = Number(input);
+      if (!Number.isFinite(userAns)) return;
+      const correct = Math.abs(userAns - currentProblem.answer) < 0.001; // allow floating point
+
+      attemptedTotal++;
+      const feedback = document.getElementById('feedback');
+      const explanation = document.getElementById('explanation');
+
+      if (correct) {
+        correctTotal++;
+        streak++;
+        feedback.className = 'feedback correct';
+        feedback.textContent = '✅ Correct! Well done.';
+        feedback.style.display = 'block';
+
+        // Show short confirmation, then allow next
+        if (streak >= 5 && currentLevel === unlockedUpTo && unlockedUpTo < levels.length - 1) {
+          unlockedUpTo++;
+          feedback.textContent = `✅ Correct! 🎉 Level ${unlockedUpTo + 1} unlocked!`;
+        }
+      } else {
+        streak = 0;
+        feedback.className = 'feedback wrong';
+        feedback.textContent = `❌ Not quite. The answer is ${currentProblem.answer}.`;
+        feedback.style.display = 'block';
+      }
+
+      // Always show the easy explanation
+      document.getElementById('explanation-content').innerHTML = currentProblem.explanation;
+      explanation.style.display = 'block';
+
+      updateUI();
+      saveProgress();
+    }
+
+    function nextQuestion() {
+      loadProblem();
+    }
+
+    function updateUI() {
+      // Topic info
+      document.getElementById('topic-title').textContent = levels[currentLevel].name;
+      document.getElementById('topic-desc').textContent = levels[currentLevel].desc;
+      document.getElementById('current-level-label').textContent = `Level ${currentLevel + 1}: ${levels[currentLevel].name}`;
+
+      // Streak
+      document.getElementById('streak-count').textContent = streak;
+
+      // Stats
+      document.getElementById('stat-correct').textContent = correctTotal;
+      document.getElementById('stat-attempted').textContent = attemptedTotal;
+      const acc = attemptedTotal === 0 ? '–' : Math.round((correctTotal / attemptedTotal) * 100) + '%';
+      document.getElementById('stat-accuracy').textContent = acc;
+
+      // Progress bar (based on unlocked levels)
+      const progressPct = Math.round((unlockedUpTo / (levels.length - 1)) * 100);
+      document.getElementById('progress-bar').style.width = progressPct + '%';
+      document.getElementById('progress-text').textContent = progressPct + '% unlocked';
+    }
+
+    function showLevelSelect() {
+      document.getElementById('practice-card').style.display = 'none';
+      document.getElementById('level-select-card').style.display = 'block';
+      renderLevelButtons();
+    }
+
+    function hideLevelSelect() {
+      document.getElementById('level-select-card').style.display = 'none';
+      document.getElementById('practice-card').style.display = 'block';
+    }
+
+    function renderLevelButtons() {
+      const container = document.getElementById('level-buttons');
+      container.innerHTML = '';
+      levels.forEach((lvl, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'level-btn';
+        if (i === currentLevel) btn.classList.add('active');
+        if (i > unlockedUpTo) {
+          btn.classList.add('locked');
+          btn.innerHTML = `${lvl.name}<span class="lock">🔒 Locked</span>`;
+        } else {
+          btn.textContent = lvl.name;
+          btn.onclick = () => {
+            currentLevel = i;
+            streak = 0; // reset streak when switching
+            hideLevelSelect();
+            loadProblem();
+          };
+        }
+        container.appendChild(btn);
+      });
+    }
+
+    const STORAGE_KEY = 'mathsTeacherProgressV2';
+
+    function saveProgress() {
+      try {
+        const data = {
+          unlockedUpTo: Math.max(0, Math.min(Number(unlockedUpTo) || 0, levels.length - 1)),
+          correctTotal: Math.max(0, Number(correctTotal) || 0),
+          attemptedTotal: Math.max(0, Number(attemptedTotal) || 0),
+          currentLevel: Math.max(0, Math.min(Number(currentLevel) || 0, levels.length - 1))
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        // The app still works if storage is unavailable/private.
+      }
+    }
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('mathsTeacherProgress');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        unlockedUpTo = Math.max(0, Math.min(Number(data.unlockedUpTo) || 0, levels.length - 1));
+        correctTotal = Math.max(0, Number(data.correctTotal) || 0);
+        attemptedTotal = Math.max(0, Number(data.attemptedTotal) || 0);
+        currentLevel = Math.max(0, Math.min(Number(data.currentLevel) || 0, unlockedUpTo));
+      } catch (e) {
+        unlockedUpTo = 0;
+        correctTotal = 0;
+        attemptedTotal = 0;
+        currentLevel = 0;
+      }
+    }
+
+    // Keyboard support
+    document.getElementById('answer-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    // Start
+    loadProgress();
+    loadProblem();
+
+    // Register service worker for offline / home-screen reliability
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
